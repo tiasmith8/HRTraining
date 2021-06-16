@@ -2,6 +2,7 @@
 using HRTraining.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HRTraining.Domain.Controllers
@@ -61,27 +62,40 @@ namespace HRTraining.Domain.Controllers
         }
 
         [HttpGet("{id}/devices")]
-        public async Task<ActionResult> GetDevices(Guid id)
+        public async Task<ActionResult> GetProfileDevices(Guid id)
         {
             var profile = await _profileContext.GetByIdAsync<Profile>(id);
             return Ok(profile.Devices);
         }
 
         [HttpPost("{id}/devices")]
-        public async Task<ActionResult> AddDevice(Guid id, Device device)
+        public async Task<ActionResult> AddDeviceToProfile(Guid id, Device device)
         {
-            var profile = await _profileContext.GetByIdAsync<Profile>(id);
             await _profileContext.AddDeviceToProfile(id, device);
-            return Ok(profile);
+            return Ok(device.Id);
         }
 
-        [HttpDelete("{id}/devices")]
-        public async Task<ActionResult> DeleteDevice(Guid id, Guid deviceId)
+        [HttpDelete("{id}/devices/{deviceId}")]
+        public async Task<ActionResult> DeleteDeviceFromProfile(Guid id, Guid deviceId)
+        {
+            await _deviceContext.DeleteByIdAsync(deviceId);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/devices/{deviceId}")]
+        public async Task<ActionResult> UpdateProfileDevice(Guid id, Guid deviceId, Device device)
+        {
+            await _deviceContext.UpdateAsync(device);
+            return Ok(device);
+        }
+
+        [HttpGet("{id}/devices/{deviceId}")]
+        public async Task<ActionResult> GetProfileDevice(Guid id, Guid deviceId)
         {
             var profile = await _profileContext.GetByIdAsync<Profile>(id);
-            var device = await _deviceContext.GetByIdAsync<Device>(deviceId);
-            profile.Devices.Remove(device);
-            return Ok(profile);
+            var device = profile.Devices.Where(d => d.Id == deviceId).FirstOrDefault();
+
+            return Ok(device);
         }
     }
 }

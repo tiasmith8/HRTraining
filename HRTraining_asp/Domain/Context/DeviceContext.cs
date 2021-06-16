@@ -1,8 +1,6 @@
-﻿using HRTraining.Domain.Context;
-using HRTraining.Domain.Entities;
+﻿using HRTraining.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,9 +32,7 @@ namespace HRTraining.Domain.Context
 
         public IQueryable<T> Queryable<T>(Guid id)
         {
-            var profile
-
-            return (IQueryable<T>)Devices.Find();
+            return (IQueryable<T>)Devices;
         }
 
         public async Task UpdateAsync(Device device)

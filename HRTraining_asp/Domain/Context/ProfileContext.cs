@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HRTraining.Domain.Context
 {
-    public class ProfileContext : DbContext/*, IDataContext*/
+    public class ProfileContext : DbContext
     {
         public DbSet<Profile> Profile { get; set; }
 
