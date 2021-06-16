@@ -54,6 +54,11 @@ namespace HRTraining.Domain.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Update user's profile
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProfile(Profile profile)
         {
