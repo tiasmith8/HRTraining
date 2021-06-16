@@ -12,11 +12,12 @@ namespace HRTraining.Domain.Controllers
     public class GoalsController : ControllerBase
     {
         private readonly GoalsContext _goalsContext;
+        private readonly ProfileContext _profileContext;
 
-        public GoalsController(GoalsContext goalsContext)
+        public GoalsController(GoalsContext goalsContext, ProfileContext profileContext)
         {
             _goalsContext = goalsContext;
-            _goalsContext.Database.EnsureCreated();
+            _profileContext = profileContext;
         }
 
         [HttpGet]
@@ -29,8 +30,8 @@ namespace HRTraining.Domain.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetGoal(Guid id)
         {
-            var workout = await _goalsContext.GetByIdAsync<Goal>(id);
-            return Ok(workout);
+            var goal = await _goalsContext.GetByIdAsync<Goal>(id);
+            return Ok(goal);
         }
 
         [HttpPost]

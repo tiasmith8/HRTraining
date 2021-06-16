@@ -1,4 +1,5 @@
 ﻿using HRTraining.Domain.Entities;
+using HRTraining.Domain.Entities.Goals;
 using HRTraining.Domain.Entities.Targets;
 using HRTraining.Domain.Entities.Workouts;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,13 @@ namespace HRTraining.Domain.Context
             await SaveChangesAsync();
         }
 
+        public async Task AddGoalToProfile(Guid profileId, Goal goal)
+        {
+            var profile = GetProfile(profileId);
+            profile.Goals.Add(goal);
+            await SaveChangesAsync();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Profile>().ToTable("Profile");
@@ -76,6 +84,7 @@ namespace HRTraining.Domain.Context
             return Profile.Where(p => p.Id == id)
                 .Include(p => p.Devices)
                 .Include(p => p.WorkoutHistory)
+                .Include(p => p.Goals)
                 .FirstOrDefault();
         }
     }

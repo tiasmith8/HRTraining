@@ -1,5 +1,6 @@
 ﻿using HRTraining.Domain.Context;
 using HRTraining.Domain.Entities;
+using HRTraining.Domain.Entities.Goals;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -13,13 +14,17 @@ namespace HRTraining.Domain.Controllers
     {
         private readonly ProfileContext _profileContext;
         private readonly DeviceContext _deviceContext;
+        private readonly GoalsContext _goalsContext;
 
-        public ProfileController(ProfileContext profileContext, DeviceContext deviceContext)
+        public ProfileController(ProfileContext profileContext, DeviceContext deviceContext
+            , GoalsContext goalsContext)
         {
             _profileContext = profileContext;
             _deviceContext = deviceContext;
-            _profileContext.Database.EnsureCreated();
+            _goalsContext = goalsContext;
         }
+
+        #region Profile
 
         [HttpGet]
         public async Task<ActionResult> GetProfiles()
@@ -66,6 +71,10 @@ namespace HRTraining.Domain.Controllers
             return Ok(profile);
         }
 
+        #endregion
+
+        #region Devices
+
         [HttpGet("{id}/devices")]
         public async Task<ActionResult> GetProfileDevices(Guid id)
         {
@@ -102,5 +111,49 @@ namespace HRTraining.Domain.Controllers
 
             return Ok(device);
         }
+
+        #endregion 
+
+
+
+        [HttpGet("{id}/goals")]
+        public async Task<ActionResult> GetProfileGoals(Guid id)
+        {
+            var profile = await _profileContext.GetByIdAsync<Profile>(id);
+            return Ok(profile.Goals);
+        }
+
+        [HttpPost("{id}/goals")]
+        public async Task<ActionResult> CreateProfileGoal(Guid id, Goal goal)
+        {
+            await _profileContext.AddGoalToProfile(id, goal);
+            //await _goalsContext.CreateAsync(goal, id);
+            return Ok(goal.Id);
+        }
+
+        [HttpDelete("{id}/goals/{goalId}")]
+        public async Task<ActionResult> DeleteProfileGoal(Guid id, Guid goalId)
+        {
+            await _goalsContext.DeleteByIdAsync(goalId);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/goals/{goalId}")]
+        public async Task<ActionResult> UpdateProfileGoal(Guid id, Guid goalId, Goal goal)
+        {
+            await _goalsContext.UpdateAsync(goal);
+            return Ok(goal);
+        }
+
+        [HttpGet("{id}/goals/{goalId}")]
+        public async Task<ActionResult> GetProfileGoal(Guid id, Guid goalId)
+        {
+            var profile = await _profileContext.GetByIdAsync<Profile>(id);
+            var goal = profile.Goals.Where(d => d.Id == goalId).FirstOrDefault();
+
+            return Ok(goal);
+        }
+
+
     }
 }

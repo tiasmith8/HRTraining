@@ -12,6 +12,7 @@ namespace HRTraining.Domain.Entities
         {
             Devices = new List<Device>();
             WorkoutHistory = new List<WorkoutHistory>();
+            Goals = new List<Goal>();
         }
 
         public virtual Guid Id { get; set; }

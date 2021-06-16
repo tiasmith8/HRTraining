@@ -1,4 +1,5 @@
-﻿using HRTraining.Domain.Entities.Goals;
+﻿using HRTraining.Domain.Entities;
+using HRTraining.Domain.Entities.Goals;
 using HRTraining.Domain.Entities.Targets;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,14 +8,30 @@ using System.Threading.Tasks;
 
 namespace HRTraining.Domain.Context
 {
-    public class GoalsContext : DbContext/*, IDataContext*/
+    public class GoalsContext : DbContext
     {
         public DbSet<Goal> Goal { get; set; }
 
-        public async Task/*<Guid>*/ CreateAsync(Goal goal)
+        private ProfileContext _profileContext;
+
+        public GoalsContext(ProfileContext profileContext)
         {
+            _profileContext = profileContext;
+        }
+
+        public async Task<Guid> CreateAsync(Goal goal, Guid id = default(Guid))
+        {
+            if(id != Guid.Empty)
+            {
+                var profile = await _profileContext.GetByIdAsync<Profile>(id);
+                profile.Goals.Add(goal);
+                await SaveChangesAsync();
+                return goal.Id;
+            }
+
             Goal.Add(goal);
             await SaveChangesAsync();
+            return goal.Id;
         }
 
         public async Task DeleteByIdAsync(Guid id)
@@ -31,8 +48,14 @@ namespace HRTraining.Domain.Context
             return (T)goal;
         }
 
-        public IQueryable<T> Queryable<T>()
+        public IQueryable<T> Queryable<T>(Guid id = default(Guid))
         {
+            if(id != Guid.Empty)  
+            {
+                var profile = _profileContext.GetByIdAsync<Profile>(id).Result;
+                return (IQueryable<T>)profile.Goals;
+            }
+
             var goals = Goal;
             return (IQueryable<T>)goals;
         }
