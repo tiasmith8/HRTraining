@@ -6,9 +6,8 @@ namespace HRTraining.Domain.Entities.Activities
 {
     [Serializable]
     // Stretch, Run, Walk - everything
-    public abstract class Activity
+    public abstract class Activity : EntityBase
     {
-        public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         // public virtual TimeSpan Duration { get; set; }
         public virtual string Instructions { get; set; }

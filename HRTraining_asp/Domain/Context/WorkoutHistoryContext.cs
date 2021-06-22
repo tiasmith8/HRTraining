@@ -50,6 +50,8 @@ namespace HRTraining.Domain.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<WorkoutHistory>();
+            builder.Entity<ActivityHistory>();
             builder.Entity<Calorie>();
             builder.Entity<Distance>();
             builder.Entity<Duration>();

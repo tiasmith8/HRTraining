@@ -7,9 +7,8 @@ namespace HRTraining.Domain.Entities
 {
     // Tracked at the single ActivityHistory level
     // This data pulled from device and stored in a session record? - use the ble service
-    public class ActivityStatistics
+    public class ActivityStatistics : EntityBase
     {
-        public virtual Guid Id { get; set; }
         public virtual int AverageHeartRate { get; set; }
         public virtual int MaximumHeartRate { get; set; }
         public virtual int MinimumHeartRate { get; set; }

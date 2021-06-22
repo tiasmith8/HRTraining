@@ -3,6 +3,7 @@ using HRTraining.Domain.Entities;
 using HRTraining.Domain.Entities.Goals;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HRTraining.Domain.Controllers
@@ -21,21 +22,21 @@ namespace HRTraining.Domain.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetGoals()
+        public async Task<ActionResult<IEnumerable<Goal>>> GetGoals()
         {
             var goals = _goalsContext.Queryable<Goal>();
             return Ok(goals);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetGoal(Guid id)
+        public async Task<ActionResult<Goal>> GetGoal(Guid id)
         {
             var goal = await _goalsContext.GetByIdAsync<Goal>(id);
             return Ok(goal);
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateGoal(Goal goal)
+        public async Task<ActionResult<Guid>> CreateGoal(Goal goal)
         {
             await _goalsContext.CreateAsync(goal);
             return Ok(goal.Id);
@@ -49,7 +50,7 @@ namespace HRTraining.Domain.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateGoal(Goal goal)
+        public async Task<ActionResult<Goal>> UpdateGoal(Goal goal)
         {
             await _goalsContext.UpdateAsync(goal);
             return Ok(goal);

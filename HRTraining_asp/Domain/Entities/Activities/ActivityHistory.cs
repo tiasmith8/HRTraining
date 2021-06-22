@@ -9,7 +9,7 @@ namespace HRTraining.Domain.Entities
     /// Also contains statistics for each activity in the workout
     /// + when and where it happened
     /// </summary>
-    public class ActivityHistory /*: Activity*/
+    public class ActivityHistory : EntityBase
     {
         public ActivityHistory(DateTime? startTime = null)
         {
@@ -17,7 +17,6 @@ namespace HRTraining.Domain.Entities
             StartTime = !startTime.HasValue ? DateTime.UtcNow : startTime;
         }
 
-        public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual string Instructions { get; set; }
         public virtual IList<Target> Targets { get; set; }

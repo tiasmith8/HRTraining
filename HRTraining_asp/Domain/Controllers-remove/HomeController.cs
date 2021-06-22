@@ -4,34 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-//using System.Web.Mvc;
 
 namespace HRTraining.Domain.Controllers
 {
-    [Route("api/workouts")]
+    [Route("api/home")]
     [ApiController]
-    public class WorkoutController : ControllerBase
+    public class HomeController : ControllerBase
     {
         private readonly WorkoutContext _workoutContext;
 
-        public WorkoutController(WorkoutContext workoutContext)
+        public HomeController(WorkoutContext workoutContext)
         {
             _workoutContext = workoutContext;
-            _workoutContext.Database.EnsureCreated();
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Workout>>> GetUserWorkouts(Guid userId)
+        public async Task<ActionResult<IEnumerable<Workout>>> GetUserData(Guid userId)
         {
             // Change to searching, filtering, pagination
-            // Get by userid
+            // Get my userid
             var workouts = _workoutContext.Queryable<Workout>();
             return Ok(workouts);
         }
 
         // Change ActionResult to work with swagger
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetWorkout(Guid id)
+        public async Task<ActionResult<Workout>> GetWorkout(Guid id)
         {
             var workout = await _workoutContext.GetByIdAsync<Workout>(id);
             return Ok(workout);
@@ -41,7 +39,7 @@ namespace HRTraining.Domain.Controllers
         public async Task<ActionResult> CreateWorkout(Workout workout)
         {
             await _workoutContext.CreateAsync(workout);
-            return Ok(workout.Id);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -55,7 +53,8 @@ namespace HRTraining.Domain.Controllers
         public async Task<ActionResult> UpdateWorkout(Workout workout)
         {
             await _workoutContext.UpdateAsync(workout);
-            return Ok(workout);
+            return Ok();
         }
+
     }
 }

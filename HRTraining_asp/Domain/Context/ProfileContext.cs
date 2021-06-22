@@ -1,4 +1,5 @@
 ﻿using HRTraining.Domain.Entities;
+using HRTraining.Domain.Entities.Activities;
 using HRTraining.Domain.Entities.Goals;
 using HRTraining.Domain.Entities.Targets;
 using HRTraining.Domain.Entities.Workouts;
@@ -60,6 +61,20 @@ namespace HRTraining.Domain.Context
             await SaveChangesAsync();
         }
 
+        public async Task AddWorkoutToProfile(Guid profileId, Workout workout)
+        {
+            var profile = GetProfile(profileId);
+            profile.Workouts.Add(workout);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddWorkoutHistoryToProfile(Guid profileId, WorkoutHistory workoutHistory)
+        {
+            var profile = GetProfile(profileId);
+            profile.WorkoutHistory.Add(workoutHistory);
+            await SaveChangesAsync();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Profile>().ToTable("Profile");
@@ -67,9 +82,25 @@ namespace HRTraining.Domain.Context
             builder.Entity<Calorie>();
             builder.Entity<Distance>();
             builder.Entity<Duration>();
-            builder.Entity<Pace>();
+            builder.Entity<Entities.Targets.Pace>();
             builder.Entity<Target>().ToTable("Target");
             builder.Entity<WorkoutHistory>();
+            builder.Entity<Run>();
+            builder.Entity<Walk>();
+            builder.Entity<AerobicWorkout>();
+            builder.Entity<Cooldown>();
+            builder.Entity<Cycling>();
+            builder.Entity<Elliptical>();
+            builder.Entity<Rebounder>();
+            builder.Entity<Rest>();
+            builder.Entity<Set>();
+            builder.Entity<StrengthTraining>();
+            builder.Entity<Stretch>();
+            builder.Entity<Swim>();
+            builder.Entity<Warmup>();
+            builder.Entity<ActivityHistory>();
+            builder.Entity<Activity>().ToTable("Activity");
+            builder.Entity<Workout>().ToTable("Workout");
 
             base.OnModelCreating(builder);
         }
@@ -79,12 +110,13 @@ namespace HRTraining.Domain.Context
             optionsBuilder.UseSqlServer("Server=(local);Trusted_Connection=yes;Initial Catalog=HRTraining;");
         }
 
-        public Profile GetProfile(Guid id)
+        private Profile GetProfile(Guid id)
         {
             return Profile.Where(p => p.Id == id)
                 .Include(p => p.Devices)
                 .Include(p => p.WorkoutHistory)
                 .Include(p => p.Goals)
+                .Include(p => p.Workouts)
                 .FirstOrDefault();
         }
     }

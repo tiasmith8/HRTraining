@@ -2,8 +2,7 @@
 
 namespace HRTraining.Domain.Entities.Targets
 {
-    public abstract class Target
+    public abstract class Target : EntityBase
     {
-        public virtual Guid Id { get; set; }
     }
 }

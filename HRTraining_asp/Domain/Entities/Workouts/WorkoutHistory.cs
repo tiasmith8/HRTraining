@@ -5,21 +5,15 @@ using System.Collections.Generic;
 
 namespace HRTraining.Domain.Entities.Workouts
 {
-    public class WorkoutHistory /*: Workout*/
+    public class WorkoutHistory : EntityBase
     {
-        public virtual Guid Id { get; set; }
         public virtual string Name { get; set; }
         public virtual string Description { get; set; }
-        //public WorkoutHistory(Workout workout)
-        //{
-        //    Workout = workout;
-        //    ActivityHistories = (IList<ActivityHistory>)workout.Activities;
-        //}
-
-        //public WorkoutHistory()
-        //{
-
-        //}
+        public WorkoutHistory()
+        {
+            //Workout = workout;
+            ActivityHistories = new List<ActivityHistory>();
+        }
 
         //public virtual Workout Workout { get; set; }
         public virtual IList<ActivityHistory> ActivityHistories { get; set; }

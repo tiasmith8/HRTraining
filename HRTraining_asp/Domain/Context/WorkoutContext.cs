@@ -18,8 +18,23 @@ namespace HRTraining.Domain.Context
     {
         public DbSet<Workout> Workout { get; set; }
 
-        public async Task<Guid> CreateAsync(Workout workout)
+        private ProfileContext _profileContext;
+
+        public WorkoutContext(ProfileContext profileContext)
         {
+            _profileContext = profileContext;
+        }
+
+        public async Task<Guid> CreateAsync(Workout workout, Guid id = default(Guid))
+        {
+            if (id != Guid.Empty)
+            {
+                var profile = await _profileContext.GetByIdAsync<Profile>(id);
+                profile.Workouts.Add(workout);
+                await SaveChangesAsync();
+                return workout.Id;
+            }
+
             Workout.Add(workout);
             await SaveChangesAsync();
             return workout.Id;

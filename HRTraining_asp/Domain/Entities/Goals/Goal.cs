@@ -4,9 +4,8 @@ using System;
 namespace HRTraining.Domain.Entities.Goals
 {
     // Weekly goals, workout goal, weightloss goal, blood pressure goal, 6min mile
-    public class Goal
+    public class Goal : EntityBase
     {
-        public virtual Guid Id { get; set; }
         /// <summary>
         /// Ex: 3-minute Plank
         /// </summary>

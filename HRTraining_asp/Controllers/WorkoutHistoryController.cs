@@ -3,6 +3,7 @@ using HRTraining.Domain.Entities;
 using HRTraining.Domain.Entities.Workouts;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,16 +23,16 @@ namespace HRTraining.Domain.Controllers
             _workoutHistoryContext.Database.EnsureCreated();
         }
 
+        #region Workouts
         [HttpGet]
-        public async Task<ActionResult> GetWorkoutHistories(Guid profileId)
+        public async Task<ActionResult<IEnumerable<WorkoutHistory>>> GetWorkoutHistories(Guid profileId)
         {
             var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
-            var workoutHistories = profile.WorkoutHistory;
-            return Ok(workoutHistories);
+            return Ok(profile.WorkoutHistory);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetWorkoutHistory(Guid profileId, Guid id)
+        public async Task<ActionResult<WorkoutHistory>> GetWorkoutHistory(Guid profileId, Guid id)
         {
             var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
             var workoutHistory = profile.WorkoutHistory.Where(w => w.Id == id);
@@ -39,7 +40,7 @@ namespace HRTraining.Domain.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
+        public async Task<ActionResult<Guid>> CreateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
         {
             var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
             await _workoutHistoryContext.CreateAsync(workoutHistory);
@@ -54,10 +55,12 @@ namespace HRTraining.Domain.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
+        public async Task<ActionResult<WorkoutHistory>> UpdateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
         {
             await _workoutHistoryContext.UpdateAsync(workoutHistory);
             return Ok(workoutHistory);
         }
+        #endregion
+
     }
 }
