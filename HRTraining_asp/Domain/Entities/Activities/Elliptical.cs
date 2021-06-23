@@ -2,9 +2,9 @@
 {
     public class Elliptical : Activity
     {
-        public int InclinePercentage { get; set; }
-        public int Resistance { get; set; }
-        public int StrokesPerMinute { get; set; }
-        public bool BackwardDirection { get; set; }
+        public virtual int InclinePercentage { get; set; }
+        public virtual int Resistance { get; set; }
+        public virtual int StrokesPerMinute { get; set; }
+        public virtual bool BackwardDirection { get; set; }
     }
 }

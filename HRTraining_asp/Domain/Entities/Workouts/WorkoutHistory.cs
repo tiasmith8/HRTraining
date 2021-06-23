@@ -1,6 +1,4 @@
-﻿using HRTraining.Domain.Entities.Activities;
-using HRTraining.Domain.Entities.Goals;
-using System;
+﻿using HRTraining.Domain.Entities.Goals;
 using System.Collections.Generic;
 
 namespace HRTraining.Domain.Entities.Workouts

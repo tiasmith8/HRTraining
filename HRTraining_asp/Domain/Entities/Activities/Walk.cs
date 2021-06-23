@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HRTraining.Domain.Entities.Activities
+﻿namespace HRTraining.Domain.Entities.Activities
 {
     public class Walk : Activity
     {

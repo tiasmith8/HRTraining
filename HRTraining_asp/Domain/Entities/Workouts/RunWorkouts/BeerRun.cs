@@ -20,7 +20,6 @@
         /// <summary>
         /// Name of the beer consumed
         /// </summary>
-        public string BeerName { get; set; }
-
+        public virtual string BeerName { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Run : Activity
     {
-        public int InclinePercentage { get; set; }
-        public Route Route { get; set; }
+        public virtual int InclinePercentage { get; set; }
+        public virtual Route Route { get; set; }
     }
 }

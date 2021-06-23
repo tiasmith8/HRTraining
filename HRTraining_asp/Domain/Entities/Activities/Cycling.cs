@@ -2,7 +2,7 @@
 {
     public class Cycling : Activity
     {
-        public int Rpm { get; set; }
-        public int Resistance { get; set; }
+        public virtual int Rpm { get; set; }
+        public virtual int Resistance { get; set; }
     }
 }

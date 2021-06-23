@@ -1,6 +1,5 @@
 ﻿using HRTraining.Domain.Entities.Activities;
 using HRTraining.Domain.Entities.Goals;
-using HRTraining.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

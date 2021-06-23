@@ -1,14 +1,12 @@
 ﻿using HRTraining.Domain.Interfaces;
-using System;
 
 namespace HRTraining.Domain.Entities
 {
     // Holds data for the google maps route image/tracing
     // Incorporate the google api - https://github.com/vivet/GoogleApi
     // Use MapBox instead of google
-    public class Route : IRoute
+    public class Route : EntityBase, IRoute
     {
-        public virtual Guid Id { get; set; }
         public virtual string StartPoint { get; set; }
         public virtual string EndPoint { get; set; }
 

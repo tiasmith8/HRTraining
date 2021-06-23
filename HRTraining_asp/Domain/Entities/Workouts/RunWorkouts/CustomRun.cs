@@ -17,6 +17,6 @@ namespace HRTraining.Domain.Entities.Runs
             set { }
         }
 
-        public IList<Activity> Activities { get; set; }
+        //public IList<Activity> Activities { get; set; }
     }
 }
