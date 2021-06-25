@@ -32,12 +32,12 @@ namespace HRTraining.Domain.Context
                 var profile = await _profileContext.GetByIdAsync<Profile>(id);
                 profile.Workouts.Add(workout);
                 await SaveChangesAsync();
-                return workout.Id;
+                return workout.ID;
             }
 
             Workout.Add(workout);
             await SaveChangesAsync();
-            return workout.Id;
+            return workout.ID;
         }
 
         public async Task DeleteByIdAsync(Guid id)

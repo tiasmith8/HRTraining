@@ -112,7 +112,7 @@ namespace HRTraining.Domain.Context
 
         private Profile GetProfile(Guid id)
         {
-            return Profile.Where(p => p.Id == id)
+            return Profile.Where(p => p.ID == id)
                 .Include(p => p.Devices)
                 .Include(p => p.WorkoutHistory)
                 .Include(p => p.Goals)

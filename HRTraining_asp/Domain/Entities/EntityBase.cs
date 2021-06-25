@@ -7,6 +7,6 @@ namespace HRTraining.Domain.Entities
 {
     public abstract class EntityBase
     {
-        public Guid Id { get; set; }
+        public Guid ID { get; set; }
     }
 }

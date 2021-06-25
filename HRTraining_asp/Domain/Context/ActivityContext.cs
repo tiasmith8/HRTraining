@@ -44,7 +44,7 @@ namespace HRTraining.Domain.Context
         public async Task<T> GetByIdAsync<T>(Guid id)
             where T : Activity
         {
-            var activity = Activity.Where(a => a.Id == id).Include(a => a.Targets);
+            var activity = Activity.Where(a => a.ID == id).Include(a => a.Targets);
             return (T)activity;
         }
 

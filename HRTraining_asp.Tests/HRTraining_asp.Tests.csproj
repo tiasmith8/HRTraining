@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HRTraining\HRTraining.csproj" />
     <ProjectReference Include="..\HRTraining_asp\HRTraining_asp.csproj" />
   </ItemGroup>
 

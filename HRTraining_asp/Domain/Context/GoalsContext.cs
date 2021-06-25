@@ -26,12 +26,12 @@ namespace HRTraining.Domain.Context
                 var profile = await _profileContext.GetByIdAsync<Profile>(id);
                 profile.Goals.Add(goal);
                 await SaveChangesAsync();
-                return goal.Id;
+                return goal.ID;
             }
 
             Goal.Add(goal);
             await SaveChangesAsync();
-            return goal.Id;
+            return goal.ID;
         }
 
         public async Task DeleteByIdAsync(Guid id)
