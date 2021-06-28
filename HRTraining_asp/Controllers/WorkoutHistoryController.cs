@@ -1,11 +1,16 @@
-﻿using HRTraining.Domain.Context;
+﻿using AutoMapper;
+using HRTraining.Data;
 using HRTraining.Domain.Entities;
 using HRTraining.Domain.Entities.Workouts;
+using HRTraining_asp.Domain.Entities.Workouts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DbContext = HRTraining.Data.DbContext;
+using Profile = HRTraining.Domain.Entities.Profile;
 
 namespace HRTraining.Domain.Controllers
 {
@@ -13,52 +18,63 @@ namespace HRTraining.Domain.Controllers
     [ApiController]
     public class WorkoutHistoryController : ControllerBase
     {
-        private readonly WorkoutHistoryContext _workoutHistoryContext;
-        private readonly ProfileContext _profileContext;
+        private readonly DbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public WorkoutHistoryController(WorkoutHistoryContext workoutHistoryContext, ProfileContext profileContext)
+        public WorkoutHistoryController(DbContext dbContext, IMapper mapper)
         {
-            _workoutHistoryContext = workoutHistoryContext;
-            _profileContext = profileContext;
-            _workoutHistoryContext.Database.EnsureCreated();
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         #region Workouts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkoutHistory>>> GetWorkoutHistories(Guid profileId)
+        public async Task<ActionResult<IEnumerable<WorkoutHistoryModel>>> GetWorkoutHistories(Guid profileId)
         {
-            var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
-            return Ok(profile.WorkoutHistory);
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var models = _mapper.Map<WorkoutHistoryModel[]>(profile.WorkoutHistory);
+
+            return Ok(models);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<WorkoutHistory>> GetWorkoutHistory(Guid profileId, Guid id)
+        public async Task<ActionResult<WorkoutHistoryModel>> GetWorkoutHistory(Guid profileId, Guid id)
         {
-            var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
-            var workoutHistory = profile.WorkoutHistory.Where(w => w.Id == id);
-            return Ok(workoutHistory);
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var entity = profile.WorkoutHistory.Where(w => w.ID == id);
+            var model = _mapper.Map<WorkoutHistoryModel>(entity);
+
+            return Ok(model);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
+        public async Task<ActionResult<Guid>> CreateWorkoutHistory(Guid profileId, WorkoutHistoryModel workoutHistory)
         {
-            var profile = await _profileContext.GetByIdAsync<Profile>(profileId);
-            await _workoutHistoryContext.CreateAsync(workoutHistory);
-            return Ok(workoutHistory.Id);
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var entity = _mapper.Map<WorkoutHistory>(workoutHistory);
+            profile.WorkoutHistory.Add(entity);
+
+            _dbContext.Update(profile);
+            return Ok(entity.ID);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteWorkoutHistory(Guid profileId, Guid id)
         {
-            await _workoutHistoryContext.DeleteByIdAsync(id);
+            _dbContext.Remove(id);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<WorkoutHistory>> UpdateWorkoutHistory(Guid profileId, WorkoutHistory workoutHistory)
+        public async Task<ActionResult<WorkoutHistoryModel>> UpdateWorkoutHistory(Guid profileId, Guid id, WorkoutHistoryModel model)
         {
-            await _workoutHistoryContext.UpdateAsync(workoutHistory);
-            return Ok(workoutHistory);
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var entity = profile.WorkoutHistory.Where(d => d.ID == id).FirstOrDefault();
+            var workoutHistory = _mapper.Map(model, entity);
+
+            _dbContext.Update(workoutHistory);
+
+            return Ok(model);
         }
         #endregion
 
