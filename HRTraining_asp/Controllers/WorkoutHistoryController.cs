@@ -2,6 +2,7 @@
 using HRTraining.Data;
 using HRTraining.Domain.Entities;
 using HRTraining.Domain.Entities.Workouts;
+using HRTraining_asp.Domain.Entities.Activities.Models;
 using HRTraining_asp.Domain.Entities.Workouts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DbContext = HRTraining.Data.DbContext;
+using HRDbContext = HRTraining.Data.HRDbContext;
 using Profile = HRTraining.Domain.Entities.Profile;
 
 namespace HRTraining.Domain.Controllers
@@ -18,10 +19,10 @@ namespace HRTraining.Domain.Controllers
     [ApiController]
     public class WorkoutHistoryController : ControllerBase
     {
-        private readonly DbContext _dbContext;
+        private readonly HRDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public WorkoutHistoryController(DbContext dbContext, IMapper mapper)
+        public WorkoutHistoryController(HRDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -31,7 +32,9 @@ namespace HRTraining.Domain.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WorkoutHistoryModel>>> GetWorkoutHistories(Guid profileId)
         {
-            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
             var models = _mapper.Map<WorkoutHistoryModel[]>(profile.WorkoutHistory);
 
             return Ok(models);
@@ -40,9 +43,37 @@ namespace HRTraining.Domain.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<WorkoutHistoryModel>> GetWorkoutHistory(Guid profileId, Guid id)
         {
-            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
             var entity = profile.WorkoutHistory.Where(w => w.ID == id);
             var model = _mapper.Map<WorkoutHistoryModel>(entity);
+
+            return Ok(model);
+        }
+
+        [HttpGet("{id}/activityHistory/{activityHistoryId}")]
+        public async Task<ActionResult<WorkoutHistoryModel>> GetActivityHistory(Guid profileId, Guid id, Guid activityHistoryId)
+        {
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
+            var entity = profile.WorkoutHistory.Where(w => w.ID == id).FirstOrDefault().ActivityHistories.Where(x => x.ID == activityHistoryId).FirstOrDefault();
+            var model = _mapper.Map<ActivityHistoryModel>(entity);
+
+            return Ok(model);
+        }
+
+        [HttpPut("{id}/activityHistory/{activityHistoryId}")]
+        public async Task<ActionResult<WorkoutHistoryModel>> UpdateActivityHistory(Guid profileId, Guid id, Guid activityHistoryId, ActivityHistoryModel model)
+        {
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
+            var entity = profile.WorkoutHistory.Where(w => w.ID == id).FirstOrDefault().ActivityHistories.Where(x => x.ID == activityHistoryId).FirstOrDefault();
+            var activityHistory = _mapper.Map(model, entity);
+
+            _dbContext.Update(activityHistory);
 
             return Ok(model);
         }
@@ -50,7 +81,9 @@ namespace HRTraining.Domain.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateWorkoutHistory(Guid profileId, WorkoutHistoryModel workoutHistory)
         {
-            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
             var entity = _mapper.Map<WorkoutHistory>(workoutHistory);
             profile.WorkoutHistory.Add(entity);
 
@@ -68,7 +101,9 @@ namespace HRTraining.Domain.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<WorkoutHistoryModel>> UpdateWorkoutHistory(Guid profileId, Guid id, WorkoutHistoryModel model)
         {
-            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId).Include(p => p.WorkoutHistory).FirstOrDefault();
+            var profile = _dbContext.Set<Profile>().Where(p => p.ID == profileId)
+                .Include(p => p.WorkoutHistory).ThenInclude(p => p.ActivityHistories).ThenInclude(p => p.Targets)
+                .FirstOrDefault();
             var entity = profile.WorkoutHistory.Where(d => d.ID == id).FirstOrDefault();
             var workoutHistory = _mapper.Map(model, entity);
 

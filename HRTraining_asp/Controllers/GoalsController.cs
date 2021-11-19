@@ -16,9 +16,9 @@ namespace HRTraining.Domain.Controllers
     public class GoalsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly DbContext _dbContext;
+        private readonly HRDbContext _dbContext;
 
-        public GoalsController(IMapper mapper, DbContext dbContext)
+        public GoalsController(IMapper mapper, HRDbContext dbContext)
         {
             _mapper = mapper;
             _dbContext = dbContext;

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DbContext = HRTraining.Data.DbContext;
+using HRDbContext = HRTraining.Data.HRDbContext;
 
 namespace HRTraining.Domain.Controllers
 {
@@ -15,10 +15,10 @@ namespace HRTraining.Domain.Controllers
     [ApiController]
     public class WorkoutController : ControllerBase
     {
-        private readonly DbContext _dbContext;
+        private readonly HRDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public WorkoutController(DbContext dbContext, IMapper mapper)
+        public WorkoutController(HRDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -70,7 +70,7 @@ namespace HRTraining.Domain.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<WorkoutModel>> UpdateWorkout(Guid id, WorkoutModel model)
         {
-            var entity = _dbContext.Set<Workout>().Include(w => w.Activities).FirstOrDefault(x => x.ID == id);
+            var entity = _dbContext.Set<Workout>().Include(w => w.Activities).ThenInclude(w => w.Targets).FirstOrDefault(x => x.ID == id);
             var goal = _mapper.Map(model, entity);
             _dbContext.Update(entity);
             await _dbContext.SaveChangesAsync();
